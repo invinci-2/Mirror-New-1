@@ -258,7 +258,7 @@ class GoogleDriveHelper:
         if USE_SERVICE_ACCOUNTS:
             self.service_account_count = len(os.listdir("accounts"))
         self.__listener.onUploadStarted()
-        file_dir = f"{DOWNLOAD_DIR}{self.__listener.message.message_id}"
+        file_dir = f"{DOWNLOAD_DIR}/{self.__listener.message.message_id}"
         file_path = f"{file_dir}/{file_name}"
         size = get_readable_file_size(get_path_size(file_path))
         LOGGER.info("Uploading File: " + file_path)
@@ -819,7 +819,7 @@ class GoogleDriveHelper:
         self.updater = setInterval(self.update_interval, self._on_download_progress)
         try:
             meta = self.getFileMetadata(file_id)
-            path = f"{DOWNLOAD_DIR}{self.__listener.uid}/"
+            path = f"{DOWNLOAD_DIR}/{self.__listener.uid}/"
             if meta.get("mimeType") == self.__G_DRIVE_DIR_MIME_TYPE:
                 self.download_folder(file_id, path, meta.get('name'))
             else:
