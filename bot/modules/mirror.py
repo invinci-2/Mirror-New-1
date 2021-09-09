@@ -69,8 +69,8 @@ class MirrorListener(listeners.MirrorListeners):
             gid = download.gid()
             size = download.size_raw()
             if name is None : # when pyrogram's media.file_name is of NoneType
-                name = os.listdir(f'{DOWNLOAD_DIR}{self.uid}')[0]
-            m_path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
+                name = os.listdir(f'{DOWNLOAD_DIR}/{self.uid}')[0]
+            m_path = f'{DOWNLOAD_DIR}/{self.uid}/{name}'
         if self.isTar:
             try:
                 with download_dict_lock:
@@ -100,16 +100,16 @@ class MirrorListener(listeners.MirrorListeners):
                     LOGGER.info(f"Deleting archive: {m_path}")
                 else:
                     LOGGER.warning('Unable to extract archive! Uploading anyway')
-                    path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
+                    path = f'{DOWNLOAD_DIR}/{self.uid}/{name}'
                 LOGGER.info(f'got path: {path}')
 
             except NotSupportedExtractionArchive:
                 LOGGER.info("Not any valid archive, uploading file as it is.")
-                path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
+                path = f'{DOWNLOAD_DIR}/{self.uid}/{name}'
         else:
-            path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
+            path = f'{DOWNLOAD_DIR}/{self.uid}/{name}'
         up_name = pathlib.PurePath(path).name
-        up_path = f'{DOWNLOAD_DIR}{self.uid}/{up_name}'
+        up_path = f'{DOWNLOAD_DIR}/{self.uid}/{up_name}'
         LOGGER.info(f"Upload Name: {up_name}")
         drive = gdriveTools.GoogleDriveHelper(up_name, self)
         size = fs_utils.get_path_size(up_path)
@@ -297,7 +297,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False):
                 listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
                 tg_downloader = TelegramDownloadHelper(listener)
                 ms = update.message
-                tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
+                tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}/{listener.uid}/', name)
                 return
             else:
                 link = file.get_file().file_path
