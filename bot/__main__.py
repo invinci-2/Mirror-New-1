@@ -3,6 +3,7 @@ import signal
 import os
 import asyncio
 import importlib
+from speedtest import Speedtest
 
 from pyrogram import idle, filters, types, emoji
 from bot import *
@@ -28,10 +29,11 @@ from bot.helper import get_text, check_heroku
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete, usage, count
 now=datetime.now(pytz.timezone(f'{TIMEZONE}'))
 
+IMAGE_X = f"{IMAGE_URL}"
 
 def stats(update, context):
     currentTime = get_readable_time(time.time() - botStartTime)
-    current = now.strftime('%d/%m/%Y\n%I:%M:%S %p')
+    current = now.strftime('📅: %d/%m/%Y\n⏲️: %I:%M:%S %p')
     total, used, free = shutil.disk_usage('.')
     total = get_readable_file_size(total)
     used = get_readable_file_size(used)
@@ -41,16 +43,19 @@ def stats(update, context):
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
-    stats = f'<b>Bot Uptime</b>\n<code>{currentTime}</code>\n\n' \
-            f'<b>Total Disk Space:</b> <code>{total}</code>\n' \
-            f'<b>Used:</b> <code>{used}</code>\n' \
-            f'<b>Free:</b> <code>{free}</code>\n\n' \
-            f'<b>Upload:</b> <code>{sent}</code>\n' \
-            f'<b>Download:</b> <code>{recv}</code>\n\n' \
-            f'<b>CPU:</b> <code>{cpuUsage}%</code>\n' \
-            f'<b>RAM:</b> <code>{memory}%</code>\n' \
-            f'<b>DISK:</b> <code>{disk}%</code>'
-    sendMessage(stats, context.bot, update)
+    stats = f'<b>ℹ️ Bot Uptime ℹ️</b>\n<b>{currentTime}</b>\n\n' \
+            f'<b>▶️ Start Time ▶️</b>\n<b>{current}</b>\n\n' \
+            f'<b>⚙️ System Usage ⚙️</b>\n' \
+            f'<b>💿 Disk Space:</b> <b>{total}</b>\n' \
+            f'<b>📀 Used:</b> <b>{used}</b>\n' \
+            f'<b>🕊️ Free:</b> <b>{free}</b>\n' \
+            f'<b>💻 CPU:</b> <b>{cpuUsage}%</b>\n' \
+            f'<b>🖥️ RAM:</b> <b>{memory}%</b>\n' \
+            f'<b>💽 DISK:</b> <b>{disk}%</b>\n\n' \
+            f'<b>📊Data Usage📊</b>\n<b>📤 Upload:</b> <b>{sent}</b>\n' \
+            f'<b>📥 Download:</b> <b>{recv}</b>'
+
+    update.effective_message.reply_photo(IMAGE_X, stats, parse_mode=ParseMode.HTML)
 
 
 def start(update, context):
@@ -232,7 +237,7 @@ def main():
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-        bot.edit_message_text("📶 𝐑𝐄𝐒𝐓𝐀𝐑𝐓 𝐒𝐔𝐂𝐂𝐄𝐒𝐒𝐅𝐔𝐋𝐋𝐘", chat_id, msg_id)
+        bot.edit_message_text("📶𝐑𝐄𝐒𝐓𝐀𝐑𝐓 𝐒𝐔𝐂𝐂𝐄𝐒𝐒𝐅𝐔𝐋𝐋𝐘", chat_id, msg_id)
         os.remove(".restartmsg")
     bot.set_my_commands(botcmds)
 
@@ -250,6 +255,7 @@ def main():
     dispatcher.add_handler(stats_handler)
     dispatcher.add_handler(log_handler)
     updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
+    LOGGER.info("⚠️ If Any optional vars not be filled it will use Defaults vars")
     LOGGER.info("📶 Bot Started!")
     signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
 

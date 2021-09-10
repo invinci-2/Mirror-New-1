@@ -66,13 +66,6 @@ def mktable():
         logging.error(e)
         exit(1)
 
-try:
-    if bool(getConfig('_____REMOVE_THIS_LINE_____')):
-        logging.error('The README.md file there to be read! Exiting now!')
-        exit()
-except KeyError:
-    pass
-
 aria2 = aria2p.API(
     aria2p.Client(
         host="http://localhost",
@@ -496,18 +489,18 @@ except KeyError:
     SEARCH_VIEW_BUTTON = '🔎'
 
 try:
-    ZIP_BOT = getConfig('ZIP_BOT')
-    if len(ZIP_BOT) == 0:
-        ZIP_BOT = None
+    IMAGE_URL = getConfig('IMAGE_URL')
+    if len(IMAGE_URL) == 0:
+        IMAGE_URL = None
 except KeyError:
-    ZIP_BOT = 'zip'
-
+    IMAGE_URL = 'https://sinnerdrive.jack-need-boost.workers.dev/0:/mirr//20210824_150544_1_1.jpg'
 try:
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     if len(DOWNLOAD_DIR) == 0:
         DOWNLOAD_DIR = None
 except KeyError:
     DOWNLOAD_DIR = '/usr/src/app/downloads/'
+
 
 try:
     MULTI_SEARCH_URL = getConfig('MULTI_SEARCH_URL')
